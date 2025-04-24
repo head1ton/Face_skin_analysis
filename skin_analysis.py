@@ -7,6 +7,43 @@ import matplotlib.pyplot as plt
 import random
 import seaborn as sns
 import platform
+import requests
+import bz2
+import os
+
+
+def download_and_extract_dlib_landmark_model(save_dir='.'):
+    os.makedirs(save_dir, exist_ok=True)
+    model_path = os.path.join(save_dir, 'shape_predictor_68_face_landmarks.dat')
+    compressed_path = model_path + '.bz2'
+
+    if not os.path.isfile(model_path):
+        print("Landmark model not found. Downloading now...")
+        url = 'https://github.com/davisking/dlib-models/raw/master/shape_predictor_68_face_landmarks.dat.bz2'
+
+        # 다운로드
+        with requests.get(url, stream=True) as r:
+            r.raise_for_status()
+            with open(compressed_path, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+        print("Download completed.")
+
+        # 압축 해제
+        with bz2.BZ2File(compressed_path) as fr, open(model_path, 'wb') as fw:
+            fw.write(fr.read())
+        print("Extraction completed.")
+
+        # 압축 파일 제거 (선택)
+        os.remove(compressed_path)
+        print("Compressed file removed.")
+
+    else:
+        print("Landmark model already exists.")
+
+
+# 사용 예시
+download_and_extract_dlib_landmark_model()
 
 os = platform.system()
 # Windows
@@ -22,7 +59,7 @@ else:
     print(f'{os} is not set')
 
 # Streamlit 페이지 설정
-st.set_page_config(page_title="AI 피부 분석", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="AI 피부 분석", initial_sidebar_state="collapsed")
 
 # 페이지 제목
 st.markdown("<h1 style='text-align: center; color: #0C7B93;'>🔬 AI 피부 분석 시스템</h1>", unsafe_allow_html=True)
