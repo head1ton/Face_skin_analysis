@@ -1,4 +1,5 @@
-opencv-python
+dlib==19.24.8
+opencv-python-headless
 numpy==1.26.4
 streamlit==1.44.1
 matplotlib
