@@ -145,7 +145,12 @@ class FaceSkinAnalyzer:
 
 # ========== 점수 그래프 시각화 ==========
 # 점수 그래프 시각화 함수
-def plot_scores(result):
+def plot_scores(result, progress_callback=None):
+    for i in range(21):
+        time.sleep(0.2)
+        if progress_callback:
+            progress_callback((i + 1) / 21)
+
     scores = {
         part: random.randint(30, 90) for part in result.keys()
     }
@@ -229,6 +234,35 @@ def sliding_gesture_on_single_frame(frame):
                       channels="RGB", use_container_width=True)
 
     return base_frame
+
+
+# 피부 상태 요약 보고서 생성 함수
+def generate_skin_summary(result, scores):
+    total_score = sum(scores.values()) / len(scores)  # 평균 점수 계산
+    summary = ""
+
+    # 점수 범위에 따른 피부 상태 평가
+    if total_score >= 80:
+        summary = "🌟 피부 상태가 매우 우수합니다! 피부가 건강하고 탱탱합니다."
+    elif total_score >= 60:
+        summary = "😊 피부 상태가 양호합니다. 다소 개선할 부분이 있을 수 있지만, 크게 문제는 없습니다."
+    elif total_score >= 40:
+        summary = "⚠️ 피부 상태가 보통입니다. 관리가 필요할 수 있습니다. 추가적인 개선이 필요합니다."
+    else:
+        summary = "😞 피부 상태가 좋지 않습니다. 주름, 모공, 유분 등 여러 문제가 있을 수 있습니다. 개선이 필요합니다."
+
+    # 상세한 분석 항목 추가
+    for part, score in scores.items():
+        if score >= 80:
+            summary += f"\n💎 **{part.upper()}**: 우수"
+        elif score >= 60:
+            summary += f"\n👍 **{part.upper()}**: 보통"
+        elif score >= 40:
+            summary += f"\n⚠️ **{part.upper()}**: 주의"
+        else:
+            summary += f"\n❗ **{part.upper()}**: 개선 필요"
+
+    return summary
 
 
 # ========== Streamlit 앱 시작 ==========
@@ -325,14 +359,21 @@ if st.session_state.captured_frame is not None:
                                                      progress_callback=progress.progress)
 
     st.subheader("📊 분석 결과")
+    scores = analyzer.get_analysis_scores()  # 분석 점수 가져오기
     for part, analysis in st.session_state.result.items():
         score = analyzer.get_analysis_scores().get(part, 0)
         st.write(f"📌 **{part.upper()}**: {analysis} (Score: {score})")
 
     # 분석 항목별 점수 그래프
     st.subheader("📈 분석 항목별 점수")
-    plot_scores(st.session_state.result)
+    progress1 = st.progress(0)
+    plot_scores(st.session_state.result, progress_callback=progress1.progress)
 
     st.subheader("💡 추천 화장품")
     for rec in analyzer.recommend_products(st.session_state.result):
         st.success(f"🧴 {rec}")
+
+    # 피부 상태 총평 작성
+    st.subheader("💬 피부 상태 총평")
+    skin_summary = generate_skin_summary(st.session_state.result, scores)
+    st.write(skin_summary)
