@@ -405,8 +405,8 @@ def face_too_small(face, image, min_face_ratio=0.2):
 # ========== Streamlit 앱 시작 ==========
 st.title("📷 실시간 얼굴 피부 분석 데모")
 st.write("그냥 이런것도 된다~ 라고 보세요...")
-st.write("분석 수치는 모두 각각 데이터 수집 후 학습 후에 나와야하는 건데 샘플로 만드는 거라 수치는 대부분 랜덤값임. 구현시간 많이 걸림..-_-;")
-st.write("Cloud 무료 호스팅이라 지원되는 카메라로 변경했더니 구림..")
+st.write("분석 수치는 모두 각각 데이터 수집 후 학습 후에 나와야하는 건데 샘플로 만드는 거라 수치는 대부분 랜덤값임. 구현시간 많이 걸림..-_-; 분류별 하나씩 시간날 때마다 실제 수치 적용 예정")
+st.write("Cloud 무료 호스팅이라 지원되는 카메라로 변경했더니 구림.. 이것도 나중에 변경할 거임..")
 # analyzer = FaceSkinAnalyzer()
 predictor_path = "shape_predictor_68_face_landmarks.dat"
 
