@@ -1,2 +1,2 @@
-dlib
-opencv-python
+dlib==19.24.8
+opencv-python==4.11.0.86
