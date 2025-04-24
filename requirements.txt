@@ -1,4 +1,4 @@
-dlib==19.24.8
+dlib-bin==19.24.6
 opencv-python-headless
 numpy==1.26.4
 streamlit==1.44.1
