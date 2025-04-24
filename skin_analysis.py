@@ -437,7 +437,7 @@ frame_window = st.empty()
 img_file_buffer = st.camera_input("Face Skin Scan")
 
 if img_file_buffer is not None:
-    st.write(img_file_buffer)
+    # st.write(img_file_buffer)
     bytes_data = img_file_buffer.getvalue()
     frame = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
 
