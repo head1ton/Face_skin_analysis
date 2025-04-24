@@ -451,53 +451,54 @@ frame_window = st.empty()
 img_file_buffer = st.camera_input("Face Skin Scan")
 
 if img_file_buffer is not None:
-    bytes_data = img_file_buffer.getvalue()
-    frame = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
-
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = detector(gray)
-
-    if len(faces) == 0:
-        st.warning("얼굴이 제대로 검출되지 않습니다. 다시 촬영해주세요.")
-        st.session_state.captured_frame = None
-    elif face_too_small(faces[0], frame):
-        st.warning("얼굴이 너무 작게 나왔습니다. 카메라에 얼굴을 더 가까이 대고 다시 촬영해주세요.")
-        st.session_state.captured_frame = None
-    else:
-        face = faces[0]
-        try:
-            landmarks = predictor(gray, face)
-            analyzer = FaceSkinAnalyzer(landmarks=landmarks)
-        except Exception as e:
-            st.error(f"랜드마크 생성 중 오류가 발생했습니다: {e}")
-        scores = analyzer.get_analysis_scores(frame)    # 분석 점수 가져오기
-        draw_landmarks(frame, landmarks)
-        st.session_state.captured_frame = frame.copy()
-
-        # 캡처 이미지 분석
-        st.subheader("🎬 슬라이딩 캡처 애니메이션")
-        final_frame = sliding_gesture_on_single_frame(st.session_state.captured_frame)
-
-        st.subheader("🔍 피부 분석 진행 중...")
-        progress = st.progress(0)
-        st.session_state.result = analyzer.analyze_frame(final_frame,
-                                                         progress_callback=progress.progress)
-
-        st.subheader("📊 분석 결과")
-        for part, analysis in st.session_state.result.items():
-            score = analyzer.get_analysis_scores(frame).get(part, 0)
-            st.write(f"📌 **{part.upper()}**: {analysis} (Score: {score})")
-
-        # 분석 항목별 점수 그래프
-        st.subheader("📈 분석 항목별 점수")
-        progress1 = st.progress(0)
-        plot_scores(st.session_state.result, progress_callback=progress1.progress)
-
-        st.subheader("💡 추천 화장품")
-        for rec in analyzer.recommend_products(st.session_state.result):
-            st.success(f"🧴 {rec}")
-
-        # 피부 상태 총평 작성
-        st.subheader("💬 피부 상태 총평")
-        skin_summary = generate_skin_summary(st.session_state.result, scores)
-        st.write(skin_summary)
+    st.write(img_file_buffer)
+    # bytes_data = img_file_buffer.getvalue()
+    # frame = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
+    #
+    # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # faces = detector(gray)
+    #
+    # if len(faces) == 0:
+    #     st.warning("얼굴이 제대로 검출되지 않습니다. 다시 촬영해주세요.")
+    #     st.session_state.captured_frame = None
+    # elif face_too_small(faces[0], frame):
+    #     st.warning("얼굴이 너무 작게 나왔습니다. 카메라에 얼굴을 더 가까이 대고 다시 촬영해주세요.")
+    #     st.session_state.captured_frame = None
+    # else:
+    #     face = faces[0]
+    #     try:
+    #         landmarks = predictor(gray, face)
+    #         analyzer = FaceSkinAnalyzer(landmarks=landmarks)
+    #     except Exception as e:
+    #         st.error(f"랜드마크 생성 중 오류가 발생했습니다: {e}")
+    #     scores = analyzer.get_analysis_scores(frame)    # 분석 점수 가져오기
+    #     draw_landmarks(frame, landmarks)
+    #     st.session_state.captured_frame = frame.copy()
+    #
+    #     # 캡처 이미지 분석
+    #     st.subheader("🎬 슬라이딩 캡처 애니메이션")
+    #     final_frame = sliding_gesture_on_single_frame(st.session_state.captured_frame)
+    #
+    #     st.subheader("🔍 피부 분석 진행 중...")
+    #     progress = st.progress(0)
+    #     st.session_state.result = analyzer.analyze_frame(final_frame,
+    #                                                      progress_callback=progress.progress)
+    #
+    #     st.subheader("📊 분석 결과")
+    #     for part, analysis in st.session_state.result.items():
+    #         score = analyzer.get_analysis_scores(frame).get(part, 0)
+    #         st.write(f"📌 **{part.upper()}**: {analysis} (Score: {score})")
+    #
+    #     # 분석 항목별 점수 그래프
+    #     st.subheader("📈 분석 항목별 점수")
+    #     progress1 = st.progress(0)
+    #     plot_scores(st.session_state.result, progress_callback=progress1.progress)
+    #
+    #     st.subheader("💡 추천 화장품")
+    #     for rec in analyzer.recommend_products(st.session_state.result):
+    #         st.success(f"🧴 {rec}")
+    #
+    #     # 피부 상태 총평 작성
+    #     st.subheader("💬 피부 상태 총평")
+    #     skin_summary = generate_skin_summary(st.session_state.result, scores)
+    #     st.write(skin_summary)
