@@ -1,6 +1,0 @@
-cmake
-git+https://github.com/thetoby9944/face_recognition
-opencv-python==4.11.0.86
-
-freeglut3-dev
-libgtk2.0-dev
