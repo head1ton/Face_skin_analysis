@@ -59,7 +59,7 @@ else:
     print(f'{os} is not set')
 
 # Streamlit 페이지 설정
-st.set_page_config(page_title="AI 피부 분석", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="AI 피부 분석", initial_sidebar_state="expanded")
 
 # 페이지 제목
 st.markdown("<h1 style='text-align: center; color: #0C7B93;'>🔬 AI 피부 분석 시스템</h1>", unsafe_allow_html=True)
