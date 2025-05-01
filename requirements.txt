@@ -6,3 +6,6 @@ matplotlib
 seaborn
 requests
 bz2file
+scikit-learn
+pandas
+plotly
